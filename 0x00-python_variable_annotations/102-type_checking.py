@@ -2,14 +2,14 @@
 """
 A zoom_array function module.
 """
-from typing import Tuple, List, Any
+from typing import Tuple, List
 
 
 def zoom_array(lst: Tuple, factor: int = 2) -> List:
     """
     Corrected Annotations
     """
-    zoomed_in: Tuple = [
+    zoomed_in: List = [
         item for item in lst
         for i in range(factor)
     ]
