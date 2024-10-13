@@ -2,17 +2,10 @@
 """
 A floor function module.
 """
-
+import math
 
 def floor(n: float) -> int:
     """
     Returns a floor value of the input parameter
     """
-    a, b = str(n).split('.')
-
-    if int(b[0]) >= 5:
-        n = int(a) + 1
-    else:
-        n = int(a)
-
-    return n
+    return math.floor(n)
