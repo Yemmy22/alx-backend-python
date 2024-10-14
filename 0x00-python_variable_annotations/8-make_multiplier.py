@@ -11,6 +11,6 @@ def make_multiplier(multiplier: float) -> Callable[[float], float]:
     Returns the return value of a callable
     that squares the parameter input
     """
-    def callable(multiplier) -> float:
-        return multiplier * multiplier
+    def callable(value: float) -> float:
+        return value * multiplier
     return callable
