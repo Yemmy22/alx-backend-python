@@ -8,7 +8,7 @@ import time
 wait_n = __import__('1-concurrent_coroutines').wait_n
 
 
-def measure_time(n, max_delay):
+def measure_time(n: int, max_delay: int) -> float:
     """
     Computes and returns the total execution time/n for
     wait_n(n, max_delay).
