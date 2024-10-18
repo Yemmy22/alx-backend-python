@@ -5,11 +5,12 @@ A measure_runtime function module.
 
 import asyncio
 import time
+import typing
 
 async_comprehension = __import__('1-async_comprehension').async_comprehension
 
 
-async def measure_runtime():
+async def measure_runtime() -> float:
     """
     Returns the total runtime for executing
     async_comprehension function four times.
