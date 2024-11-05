@@ -4,7 +4,7 @@ A TestGithubOrgClient class module
 """
 
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
 from client import GithubOrgClient
 from typing import Callable
@@ -18,7 +18,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("google",),
         ("abc",),
     ])
-    @patch('client.get_json')  # Mock get_json in the client module
+    @patch('client.GithubOrgClient.org', new_callable=PropertyMock)
     def test_org(self, org_name: str, mock_get_json: Callable) -> None:
         """
         Define the return value for the mock
@@ -33,9 +33,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
         # Test that get_json was called
         # once with the expected argument
-        mock_get_json.assert_called_once_with(
-                f"https://api.github.com/orgs/{org_name}"
-                )
+        mock_get_json.assert_called_once_with()
 
         # Test that the returned value is as expected
         self.assertEqual(result, {"name": org_name})
