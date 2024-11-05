@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch, PropertyMock
 from parameterized import parameterized
 from client import GithubOrgClient
-from typing import Callable
+from typing import Dict
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc",),
     ])
     @patch('client.GithubOrgClient.org', new_callable=PropertyMock)
-    def test_org(self, org_name: str, mock_get_json: Callable) -> None:
+    def test_org(self, org_name: str, mock_get_json: PropertyMock) -> None:
         """
         Define the return value for the mock
         """
@@ -29,7 +29,7 @@ class TestGithubOrgClient(unittest.TestCase):
         client = GithubOrgClient(org_name)
 
         # Call the org method
-        result = client.org
+        result: Dict = client.org
 
         # Test that get_json was called
         # once with the expected argument
