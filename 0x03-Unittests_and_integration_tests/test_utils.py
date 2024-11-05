@@ -4,34 +4,53 @@ A TestAccessNestedMap class module
 """
 
 import unittest
-from unittest.mock import patch, Mock
-from parameterized import parameterized
-from utils import get_json
+from unittest.mock import patch
+from utils import memoize
 
 
-class TestGetJson(unittest.TestCase):
+class TestMemoize(unittest.TestCase):
     """
     A unittest subclass
     """
-    @parameterized.expand([
-        ("http://example.com", {"payload": True}),
-        ("http://holberton.io", {"payload": False}),
-    ])
-    @patch('utils.requests.get')
-    def test_get_json(self, test_url, test_payload, mock_get):
+    def test_memoize(self):
         """
-        Configure the mock to return a response with
-        a json method that returns test_payload
+        Define the class with a method and a memoized property
         """
-        mock_response = Mock()
-        mock_response.json.return_value = test_payload
-        mock_get.return_value = mock_response
+        class TestClass:
+            """
+            Creates test object
+            """
+            def a_method(self):
+                """
+                Returns an integer
+                """
+                return 42
 
-        # Call the function being tested
-        result = get_json(test_url)
+            @memoize
+            def a_property(self):
+                """
+                Returns the return value of the test objects property
+                """
+                return self.a_method()
 
-        # Assert that the mock was called once with the expected URL
-        mock_get.assert_called_once_with(test_url)
+        # Create an instance of TestClass
+        test_instance = TestClass()
 
-        # Assert that the result matches the expected payload
-        self.assertEqual(result, test_payload)
+        # Patch the a_method to be a mock
+        with patch.object(
+                TestClass, 'a_method', return_value=42
+                ) as mock_method:
+            # Call the memoized property twice
+            result_first_call = test_instance.a_property
+            result_second_call = test_instance.a_property
+
+            # Assert that the result is as expected
+            self.assertEqual(result_first_call, 42)
+            self.assertEqual(result_second_call, 42)
+
+            # Assert that a_method was called only once
+            mock_method.assert_called_once()
+
+
+if __name__ == '__main__':
+    unittest.main()
