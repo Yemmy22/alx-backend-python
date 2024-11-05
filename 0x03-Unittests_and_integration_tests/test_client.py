@@ -38,7 +38,3 @@ class TestGithubOrgClient(unittest.TestCase):
 
         # Test that the returned value is as expected
         self.assertEqual(result, {"name": org_name})
-
-
-if __name__ == '__main__':
-    unittest.main()
