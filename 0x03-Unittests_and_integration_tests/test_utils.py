@@ -13,12 +13,16 @@ class TestAccessNestedMap(unittest.TestCase):
     A unittest subclass
     """
     @parameterized.expand([
-        ({"a": 1}, ("a",), 1),
-        ({"a": {"b": 2}}, ("a",), {"b": 2}),
-        ({"a": {"b": 2}}, ("a", "b"), 2),
+        ({}, ("a",)),  # Empty nested map, path has "a"
+        ({"a": 1}, ("a", "b"))  # Nested map has "a"
+        # key, path includes "b" which doesn't exist
     ])
-    def test_access_nested_map(self, nested_map, path, expected):
+    def test_access_nested_map(self, nested_map, path):
         """
         Test that the method returns the correct result
         """
-        self.assertEqual(access_nested_map(nested_map, path), expected)
+        # Check if KeyError is raised with the expected message
+        with self.assertRaises(KeyError) as context:
+            access_nested_map(nested_map, path)
+        # Verify the exception message matches the missing key
+        self.assertEqual(str(context.exception), repr(path[-1]))
