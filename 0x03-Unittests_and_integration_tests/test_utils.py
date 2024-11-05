@@ -4,29 +4,34 @@ A TestAccessNestedMap class module
 """
 
 import unittest
+from unittest.mock import patch, Mock
 from parameterized import parameterized
-from utils import access_nested_map
+from utils import get_json
 
 
-class TestAccessNestedMap(unittest.TestCase):
+class TestGetJson(unittest.TestCase):
     """
     A unittest subclass
     """
     @parameterized.expand([
-        ({}, ("a",)),  # Empty nested map, path has "a"
-        ({"a": 1}, ("a", "b"))  # Nested map has "a"
-        # key, path includes "b" which doesn't exist
+        ("http://example.com", {"payload": True}),
+        ("http://holberton.io", {"payload": False}),
     ])
-    def test_access_nested_map_exception(self, nested_map, path):
+    @patch('utils.requests.get')
+    def test_get_json(self, test_url, test_payload, mock_get):
         """
-        Test that the method raises the correct exception
+        Configure the mock to return a response with
+        a json method that returns test_payload
         """
-        # Check if KeyError is raised with the expected message
-        with self.assertRaises(KeyError) as context:
-            access_nested_map(nested_map, path)
-        # Verify the exception message matches the missing key
-        self.assertEqual(str(context.exception), "'" + path[-1] + "'")
+        mock_response = Mock()
+        mock_response.json.return_value = test_payload
+        mock_get.return_value = mock_response
 
+        # Call the function being tested
+        result = get_json(test_url)
 
-if __name__ == '__main__':
-    unittest.main()
+        # Assert that the mock was called once with the expected URL
+        mock_get.assert_called_once_with(test_url)
+
+        # Assert that the result matches the expected payload
+        self.assertEqual(result, test_payload)
