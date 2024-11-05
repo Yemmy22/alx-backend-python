@@ -7,6 +7,7 @@ import unittest
 from unittest.mock import patch
 from parameterized import parameterized
 from client import GithubOrgClient
+from typing import Callable
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -18,7 +19,7 @@ class TestGithubOrgClient(unittest.TestCase):
         ("abc",),
     ])
     @patch('client.get_json')  # Mock get_json in the client module
-    def test_org(self, org_name, mock_get_json):
+    def test_org(self, org_name: str, mock_get_json: Callable) -> None:
         """
         Define the return value for the mock
         """
