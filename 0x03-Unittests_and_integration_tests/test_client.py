@@ -4,9 +4,7 @@ Unit tests for the client.GithubOrgClient class.
 """
 
 from unittest.mock import patch, PropertyMock
-from parameterized import parameterized
 from client import GithubOrgClient
-from typing import Dict
 import unittest
 
 
@@ -15,23 +13,30 @@ class TestGithubOrgClient(unittest.TestCase):
     Test cases for GithubOrgClient class methods.
     """
 
-    @parameterized.expand([
-        ("google",),
-        ("abc",),
-    ])
-    @patch('client.get_json', new_callable=PropertyMock)
-    def test_org(self, org_name: str, mock_get_json: PropertyMock) -> None:
+    def test_public_repos_url(self):
         """
-        Test that GithubOrgClient.org returns the
-        correct value and that get_json is called
-        once with the expected argument.
+        Test that _public_repos_url returns
+        the correct URL based on the org's data.
         """
-        mock_get_json.return_value = {"name": org_name}
+        mock_payload = {
+                "repos_url": "https://api.github.com/orgs/google/repos"
+                }
 
-        client = GithubOrgClient(org_name)
-        result: Dict = client.org
+        # Patch the `org` property with a
+        # PropertyMock to return the dictionary directly
+        with patch(
+                'client.GithubOrgClient.org', new_callable=PropertyMock
+                ) as mock_org:
+            mock_org.return_value = mock_payload
 
-        mock_get_json.assert_called_once_with(
-                f"https://api.github.com/orgs/{org_name}"
-                )
-        self.assertEqual(result, {"name": org_name})
+            client = GithubOrgClient("google")
+
+            # Access the _public_repos_url property
+            result = client._public_repos_url
+
+            # Verify that _public_repos_url gives the expected repos_url
+            self.assertEqual(result, mock_payload["repos_url"])
+
+
+if __name__ == "__main__":
+    unittest.main()
