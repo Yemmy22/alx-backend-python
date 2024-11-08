@@ -20,8 +20,8 @@ class TestGithubOrgClient(unittest.TestCase):
     ])
     def test_has_license(self, repo, license_key, expected):
         """
-        Test that has_license returns the expected result for
-        different repos and license keys.
+        Test that has_license returns the expected
+        result for different repos and license keys.
         """
         client = GithubOrgClient("testorg")
         result = client.has_license(repo, license_key)
