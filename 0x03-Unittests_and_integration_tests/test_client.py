@@ -101,7 +101,8 @@ class TestGithubOrgClient(unittest.TestCase):
 ])
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
-    Integration tests for GithubOrgClient with fixtures and mocks."""
+    Integration tests for GithubOrgClient with fixtures and mocks.
+    """
 
     @classmethod
     def setUpClass(cls) -> None:
@@ -115,6 +116,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         }
 
         def get_payload(url):
+            """
+            Returns the payload
+            """
             if url in route_payload:
                 return Mock(**{"json.return_value": route_payload[url]})
             return HTTPError
