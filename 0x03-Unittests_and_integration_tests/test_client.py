@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env pthon3
 """
 A module for testing the client module.
 """
