@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-"""A module for testing the client module.
 """
+A module for testing the client module.
+"""
+
+
 import unittest
 from typing import Dict
 from unittest.mock import (
