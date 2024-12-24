@@ -1,56 +1,106 @@
 #!/usr/bin/env python3
 """
-A TestAccessNestedMap class module
+A TestAccessNestedMap Module
 """
 
 import unittest
-from unittest.mock import patch
-from utils import memoize
+from parameterized import parameterized
+from utils import access_nested_map, get_json, memoize
+from unittest.mock import patch, Mock
+
+
+class TestAccessNestedMap(unittest.TestCase):
+    """
+    unittest (_type_): _description_
+    """
+
+    @parameterized.expand(
+        [
+            ({"a": 1}, ("a",), 1),
+            ({"a": {"b": 2}}, ("a",), {"b": 2}),
+            ({"a": {"b": 2}}, ("a", "b"), 2)
+        ]
+    )
+    def test_access_nested_map(self, nested_map, path, expected_output):
+        """
+        test_access_nested_map function
+        """
+        result = access_nested_map(nested_map, path)
+        self.assertEqual(result, expected_output)
+
+    @parameterized.expand(
+        [
+            ({}, ("a",), KeyError),
+            ({"a": 1}, ("a", "b"), KeyError)
+        ]
+    )
+    def test_access_nested_map_exception(self, nested_map, path,
+                                         expected_output):
+        """
+        test_access_nested_map_exception function
+        """
+        with self.assertRaises(expected_output) as context:
+            access_nested_map(nested_map, path)
+
+
+class TestGetJson(unittest.TestCase):
+    """
+    unittest (_type_): _description_
+    """
+    @parameterized.expand(
+        [
+            ('http://example.com', {'payload': True}),
+            ('http://holberton.io', {'payload': False})
+        ]
+    )
+    def test_get_json(self, url, expected_output):
+        """
+        test_get_json function
+        """
+        mock_response = Mock()
+        mock_response.json.return_value = expected_output
+        with patch('requests.get', return_value=mock_response):
+            response = get_json(url)
+
+            self.assertEqual(response, expected_output)
 
 
 class TestMemoize(unittest.TestCase):
     """
-    A unittest subclass
+    unittest (_type_): _description_
     """
+
     def test_memoize(self):
         """
-        Define the class with a method and a memoized property
+        Returns _type_: _description_
         """
+
         class TestClass:
             """
-            Creates test object
+            Test Class
             """
+
             def a_method(self):
                 """
-                Returns an integer
+                Returns _type_: _description_
                 """
                 return 42
 
             @memoize
             def a_property(self):
                 """
-                Returns the return value of the test objects property
+                Returns _type_: _description_
                 """
                 return self.a_method()
 
-        # Create an instance of TestClass
-        test_instance = TestClass()
+        test_obj = TestClass()
 
-        # Patch the a_method to be a mock
-        with patch.object(
-                TestClass, 'a_method', return_value=42
-                ) as mock_method:
-            # Call the memoized property twice
-            result_first_call = test_instance.a_property
-            result_second_call = test_instance.a_property
+        with patch.object(test_obj, 'a_method') as mock_method:
+            mock_method.return_value = 42
 
-            # Assert that the result is as expected
-            self.assertEqual(result_first_call, 42)
-            self.assertEqual(result_second_call, 42)
+            result1 = test_obj.a_property
+            result2 = test_obj.a_property
 
-            # Assert that a_method was called only once
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
             mock_method.assert_called_once()
-
-
-if __name__ == '__main__':
-    unittest.main()
